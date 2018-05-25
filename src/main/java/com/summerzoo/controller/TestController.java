@@ -18,7 +18,6 @@ public class TestController {
      */
     @RequestMapping("huanxin")
     public String huanxin(Model model){
-        System.out.println("测试方法");
         return "index";
     }
 
