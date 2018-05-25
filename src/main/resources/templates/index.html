@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" >
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<title></title>
+	<!--页面需要的css-->
+	<link rel="stylesheet" type="text/css" th:href="@{/static/css/qq.css}"/>
+	<!--layer需要的css-->
+	<!--<link rel="stylesheet" type="text/css" th:href="@{/static/js/layer-v3.1.1/layer/mobile/need/layer.css}"/>-->
+	<!--jquery的js-->
+	<script type="text/javascript" th:src="@{/static/js/jquery-1.7.2.min.js}"></script>
+	<!--layer需要的js-->
+	<!--<script type="text/javascript" th:src="@{/static/js/layer-v3.1.1/layer/mobile/layer.js}"></script>-->
+	<script type="text/javascript" th:src="@{/static/js/layer-v3.1.1/layer/layer.js}"></script>
+	<!--环信需要的sdk-->
+	<script th:src="@{/static/js/huan_xin_sdk/webim.config.js}"></script>
+	<script th:src="@{/static/js/huan_xin_sdk/strophe-1.2.8.min.js}"></script>
+	<script th:src="@{/static/js/huan_xin_sdk/websdk-1.4.12.js}"></script>
+	<!--环信的连接创建以及函数回调等操作-->
+	<script th:src="@{/static/js/reback.js}"></script>
+	<!--样式以及功能js-->
+	<script type="text/javascript" th:src="@{/static/js/chat.js}"></script>
+
+
+
+</head>
+<body>
+<div id="msg_input">
+	帐号：<input value="" id="username"/>
+	<br/>
+	密码：<input value="" id="password"/>
+	<br/>
+	昵称：<input value="" id="nickname"/>
+	<br/>
+	<input type="button" value="注册" id="regist_button"/>
+	<input type="button" value="登录" id="login_button"/>
+</div>
+<div class="qqBox" style="display:none" id="conversation_ui">
+	<div class="BoxHead">
+		<div class="headImg">
+			<img th:src="@{/static/img/6.jpg}"/>
+		</div>
+		<div class="internetName"><a href="javascript:void(0);"><span id="user_msg"></span></a></div>
+	</div>
+	<div class="context">
+		<!--<div class="tab" style="float:left;">
+			&lt;!&ndash; <a href="JavaScript:;"><i id="friend_group-msg"></i></a> &ndash;&gt;
+			<div style="background-color: #1aa1e4;height: 20px;width: 10px;float:left;" ></div>
+			<div style="background-color: red;height: 20px;width: 10px;float:left;" ></div>
+		</div>-->
+		<div class="conLeft" >
+			<ul>
+				<!--<li>
+					<div class="liLeft"><img th:src="@{/static/img/20170926103645_04.jpg}"/></div>
+					<div class="liRight">
+						<span class="intername">前端交流群</span>
+						<span class="infor">厉害了</span>
+					</div>
+				</li>
+				<li>
+					<div class="liLeft"><img th:src="@{/static/img/20170926103645_04.jpg}"/></div>
+					<div class="liRight">
+						<span class="intername">前端交流群</span>
+						<span class="infor">厉害了</span>
+					</div>
+				</li>
+				<li class="bg">
+					<div class="liLeft"><img th:src="@{/static/img/20170926103645_19.jpg}"/></div>
+					<div class="liRight">
+						<span  class="intername">赵鹏</span>
+						<span class="infor">[流泪]</span>
+					</div>
+				</li>
+				<li>
+					<div class="liLeft"><img th:src="@{/static/img/20170926103645_27.jpg}"/></div>
+					<div class="liRight">
+						<span  class="intername">web交流群</span>
+						<span class="infor">666</span>
+					</div>
+				</li>
+				<li>
+					<div class="liLeft"><img th:src="@{/static/img/20170926103645_21.jpg}"/></div>
+					<div class="liRight">
+						<span  class="intername">jquery插件库</span>
+						<span class="infor">这个群妹子多</span>
+					</div>
+				</li>-->
+			</ul>
+		</div>
+		<div class="conRight">
+			<div class="Righthead">
+				<div class="headName">赵鹏</div>
+				<div class="headConfig">
+					<ul>
+						<li><img th:src="@{/static/img/20170926103645_06.jpg}"/></li>
+						<li><img th:src="@{/static/img/20170926103645_08.jpg}"/></li>
+						<li><img th:src="@{/static/img/20170926103645_10.jpg}" id="add_friend" /></li>
+						<li><img th:src="@{/static/img/20170926103645_12.jpg}" id="delete_friends"/></li>
+					</ul>
+				</div>
+			</div>
+			<div class="RightCont">
+				<!--<ul class="newsList"></ul>-->
+			</div>
+			<div class="RightFoot">
+				<div class="emjon">
+					<ul>
+						<li><img th:src="@{/static/img/face/ee_1.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_2.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_3.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_4.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_5.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_6.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_7.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_8.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_9.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_10.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_11.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_12.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_13.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_14.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_15.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_16.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_17.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_18.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_19.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_20.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_21.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_22.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_23.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_24.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_25.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_26.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_27.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_28.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_29.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_30.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_31.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_32.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_33.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_34.png}"/></li>
+						<li><img th:src="@{/static/img/face/ee_35.png}"/></li>
+					</ul>
+				</div>
+				<div class="footTop">
+					<ul>
+						<li><img th:src="@{/static/img/20170926103645_31.jpg}"/></li>
+						<li class="ExP"><img th:src="@{/static/img/20170926103645_33.jpg}"/></li>
+						<li><img th:src="@{/static/img/20170926103645_35.jpg}"/></li>
+						<li><img th:src="@{/static/img/20170926103645_37.jpg}"/></li>
+						<li><img th:src="@{/static/img/20170926103645_39.jpg}"/></li>
+						<li><img th:src="@{/static/img/20170926103645_41.jpg}" alt="" id="send_pic"/></li>
+						<li><img th:src="@{/static/img/20170926103645_43.jpg}"/></li>
+						<li><img th:src="@{/static/img/20170926103645_45.jpg}"/></li>
+					</ul>
+				</div>
+				<div class="inputBox">
+					<!--<textarea id="dope" style="width: 99%;height: 75px; border: none;outline: none;" name="" rows="" cols=""></textarea>-->
+					<!--<div  id="dope" contentEditable:true style="width: 99%;height: 75px; border: none;outline: none;overflow:auto"
+						  onclick="getPos();"   onkeyup="getPos();" ></div>-->
+					<div class="text" style="vertical-align:middle;" id="dope" contentEditable="true"  ></div>
+					<button class="sendBtn" id="sent">发送(s)</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<input type="hidden" value="" id="friend_id"/><!--存储当前被选中的id-->
+<input type="hidden" value="" id="will_add_friend"/><!--存储将要添加的好友id-->
+<input type="file" style="display: none" accept="image/png,image/gif,image/jpeg" id="pic"/><!--加载要发送的图片-->
+</body>
+</html>
