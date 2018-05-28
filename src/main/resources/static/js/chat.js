@@ -4,17 +4,55 @@ $(document).ready(function(){
 	 * 监听点击好友列表
 	 */
 	$('.conLeft li').live('click',function(){
-
-		var before_click_user = $("#friend_id").val();
-		$(".fri_" +　before_click_user).hide();//展示当前对话的div
-
+		/*listen_left(".fri_");*/
+		var before_click_user = $("#gro_or_fri").val();
 		$(this).addClass('bg').siblings().removeClass('bg');
 		var intername=$(this).children('.liRight').children('.intername').text();
+		$(".fri_" +　before_click_user).hide();//展示当前对话的div
+		$(".gro_" +　before_click_user).hide();//展示当前对话的div
 		$('.headName').text(intername);
 		/*$('.newsList').html('');*/
-		$("#friend_id").val(intername);
+		$("#gro_or_fri").val(intername);
 		$(".fri_" +　intername).show();//展示当前对话的div
 	});
+	/**
+	 * 监听点击群组列表
+	 */
+	$('.conLeft_gro li').live('click',function(){
+		var before_click_user = $("#gro_or_fri").val();
+		$(this).addClass('bg').siblings().removeClass('bg');
+		var intername=$(this).children('.liRight').children('.intername').text();
+		var group_id=$(this).children('.liRight').children('input').val();
+		$(".gro_" +　before_click_user).hide();//隐藏之前对话
+		$(".fri_" +　before_click_user).hide();//隐藏之前对话
+		$('.headName').text(intername);
+		/*$('.newsList').html('');*/
+		$("#gro_or_fri").val(intername);
+		$("#group_id").val(group_id);
+		$(".gro_" +　intername).show();//展示当前对话的div
+
+
+		var pageNum = 1,
+			pageSize = 1000;
+		var options = {
+			pageNum: pageNum,
+			pageSize: pageSize,
+			groupId: group_id,
+			success: function (resp) {
+				alert(JSON.stringify(resp));
+			},
+			error: function(e){}
+		};
+		conn.listGroupMember(options);
+		/*"action":"get","application":"05406310-aa54-11e7-82fa-e9c7e84c4f7b","params":
+		{"_v":["1527413655157"],"pagesize":["1000"],"pagenum":ji["1"]},
+		"uri":"http://a1.easemob.com/1180170811178001/webim/chatgroups/50346566156289/users",
+			"entities":[],"data":[{"owner":"admin123"}],"timestamp":1527413655744,"duration":1,
+			"organization":"1180170811178001","applicationName":"webim","count":1*/
+
+
+	});
+
 	/**
 	 * 发送对话控制
 	 */
@@ -51,7 +89,8 @@ $(document).ready(function(){
 		$("#user_msg").text("");
 		var user_name = $("#username").val();
 		$("#user_msg").text(user_name);
-		setTimeout( function(){ get_roster()}, 1000 );
+		$("#now_status").val("friend");
+		setTimeout( function(){ get_roster();get_group()}, 1000 );
 
 	});
 	/**
@@ -61,42 +100,38 @@ $(document).ready(function(){
 		regist();
 	});
 	/**
-	 * 添加好友控制
+	 * 添加好友/群组控制
 	 */
 	$("#add_friend").click(function(){
-		layer.open({
-			type: 2,
-			title: '输入好友id',
-			area: ['300px' , '200px'],
-//            fixed: false, //不固定
-//            maxmin: true,
-			skin: 'layui-layer-rim', //加上边框
-//            shadeClose: true,
-			content:'static/add_friend.html',
-			btn: ['确定', '取消'],
-			yes: function(index, layero){
-				var body = layer.getChildFrame('body', index);
-				var iframeWin = window[layero.find('iframe')[0]['name']];//得到iframe页的窗口对象，执行iframe页的方法：
-				var friend_id = iframeWin.get_id();//调用子页面的方法，得到子页面返回的ids
-				add_friend(friend_id);
-				layer.close(index);//需要手动关闭窗口
-			}
-		});
+		var now_status = $("#now_status").val();
+		if(now_status == "friend"){
+			add_friend_msg();
+		}else if(now_status == "group"){
+			add_group_msg();
+		}
+
 	});
 	/**
-	 * 获取好友列表控制
-	 */
-	/*$("#user_msg").click(function(){
-		get_roster();
-	});*/
-
-	/**
-	 * 删除好友控制
+	 * 删除群组/好友控制
 	 */
 	$("#delete_friends").click(function(){
-		var friend_id = $("#friend_id").val();
-		removeFriends(friend_id);
-		get_roster();//刷新好友列表
+		var now_status = $("#now_status").val();
+		if(now_status == "friend"){
+			var friend_id = $("#gro_or_fri").val();
+			removeFriends(friend_id);
+			get_roster();//刷新好友列表
+		}else if(now_status == "group"){
+			var group_id = $("#group_id").val();
+			var gro_or_fri = $("#gro_or_fri").val();
+			alert(group_id);
+			var role = queryGroupInfo(group_id);
+			if(role == "owner");{
+				dissolveGroup(group_id,gro_or_fri);//解散群组
+			}
+			/*get_group();//刷新群组列表*/
+			layer.msg("当前为群组");
+		}
+
 	});
 
 	/**
@@ -108,6 +143,35 @@ $(document).ready(function(){
 	$("#pic").change(function(){
 		sendPrivateImg("pic");
 	})
+	/**
+	 * 切换个人/群组控制
+	 */
+	$("#change_role").click(function(){
+		var gro_or_fri = $("#now_status").val();
+		/*alert(gro_or_fri);*/
+		if(gro_or_fri == "friend"){
+			$("#now_status").val("group");
+			$(".conLeft_gro").show();
+			$(".conLeft").hide();
+			$(".RightCont_Gro").show();
+			$(".RightCont").hide();
+			layer.msg("已切换为群组列表");
+		}else if(gro_or_fri == "group"){
+			$("#now_status").val("friend");
+			$(".conLeft_gro").hide();
+			$(".conLeft").show();
+			$(".RightCont_Gro").hide();
+			$(".RightCont").show();
+			layer.msg("已切换为好友列表");
+		}
+	});
+	/**
+	 *	创建群组控制
+	 */
+	$("#create_group").click(function(){
+		create_group_msg();
+	});
+
 
 });
 /**
@@ -169,7 +233,7 @@ function get_roster(){
  * 向好友列表中添加所有好友
  */
 function add_frieds_to_friend_list(friend){
-	clear_friend_list();
+	clear_fri_list();
 	/*{"subscription":"none","jid":"_admin123@easemob.com","ask":"subscribe","name":"admin123","groups":[]}*/
 	var htm_final = "";
 	$.each(friend,function(i,element){
@@ -187,13 +251,36 @@ function add_frieds_to_friend_list(friend){
 	$(".conLeft").append(htm_final);
 }
 /**
- * 清空好友列表
+ * 清空好友/群组列表
  */
-function clear_friend_list(){
+function clear_fri_list(){
 	$(".conLeft").children()[0].remove();
-	/*$(".conLeft").append(
-		'<ul></ul>'
-	)*/
+}
+function clear_gro_list(){
+	$(".conLeft_gro").children()[0].remove();
+}
+/**
+ * 添加好友msg
+ */
+function add_friend_msg(){
+	layer.open({
+		type: 2,
+		title: '输入好友id',
+		area: ['300px' , '200px'],
+//            fixed: false, //不固定
+//            maxmin: true,
+		skin: 'layui-layer-rim', //加上边框
+//            shadeClose: true,
+		content:'static/add_friend.html',
+		btn: ['确定', '取消'],
+		yes: function(index, layero){
+			var body = layer.getChildFrame('body', index);
+			var iframeWin = window[layero.find('iframe')[0]['name']];//得到iframe页的窗口对象，执行iframe页的方法：
+			var friend_id = iframeWin.get_id();//调用子页面的方法，得到子页面返回的ids
+			add_friend(friend_id);
+			layer.close(index);//需要手动关闭窗口
+		}
+	});
 }
 /**
  * 删除好友
@@ -240,6 +327,7 @@ function get_will_add_friend(){
  * 添加好友
  */
 function add_friend(id){
+	/*alert(1);*/
 	var options = {
 		to: id,
 		// Demo里面接收方没有展现出来这个message，在status字段里面
@@ -253,18 +341,24 @@ function add_friend(id){
  */
 function commit_message(){
 	var news = $('#dope').html();
-	var reciver_id = $("#friend_id").val();
-	send_message(news,reciver_id);
+	var reciver_id = $("#gro_or_fri").val();
 	if(news==''){
 		layer.msg('不能为空');
 	}else{
+		send_message(news,reciver_id);
 		$('#dope').val('');
 		var str='';
 		str+='<li>'+
-			'<div class="nesHead"><img src="static/img/6.jpg"/></div>'+
-			'<div class="news"><img class="jiao" src="static/img/20170926103645_03_02.jpg">'+news+'</div>'+
+				'<div class="nesHead"><img src="static/img/6.jpg"/></div>'+
+				'<div class="news"><img class="jiao" src="static/img/20170926103645_03_02.jpg">'+news+'</div>'+
 			'</li>';
-		$('.fri_' + reciver_id).append(str);
+		var status = $("#now_status").val();
+		if(status == "friend"){
+			$('.fri_' + reciver_id).append(str);
+		}
+		if(status == "group"){
+			$('.gro_' + reciver_id).append(str);
+		}
 		/*setTimeout(answers,1000);*/
 		$('.conLeft').find('li.bg').children('.liRight').children('.infor').text("");
 		$('.RightCont').scrollTop($('.RightCont')[0].scrollHeight );
@@ -367,7 +461,7 @@ function sendPrivateImg(obj) {
 		var option = {
 			apiUrl: WebIM.config.apiURL,
 			file: file,
-			to: $("#friend_id").val(),                    // 接收消息对象
+			to: $("#gro_or_fri").val(),                    // 接收消息对象
 			roomType: false,
 			chatType: 'singleChat',
 			onFileUploadError: function () {      // 消息上传失败
@@ -378,7 +472,7 @@ function sendPrivateImg(obj) {
 				/*alert(JSON.stringify(data));*/
 				var pic_uri = data.uri+"/"+data.entities[0].uuid;
 				var pic = '<img src="'+pic_uri+'" style="width:100px;height:100px;">';
-				var reciver_id = $("#friend_id").val();
+				var reciver_id = $("#gro_or_fri").val();
 				var str = '<li">'+
 					'<div class="nesHead" ><img src="static/img/6.jpg" /></div>'+
 					'<div>'+ pic +'</div>'+
@@ -397,3 +491,192 @@ function sendPrivateImg(obj) {
 		conn.send(msg.body);
 	}
 };
+//	----------------------------------------------------------------群组----------------------------------------------------------------
+
+/**
+ * 获取当前用户加入的群组
+ */
+function get_group(){
+	var options = {
+		success: function (group) {
+			add_group_to_group_list(group);//向好友列表中添加好友
+			add_group_div(group);//向右侧群组对话模块儿中添加div
+		},
+		error: function (e) {
+		}
+	};
+	conn.getGroup(options);
+}
+/**
+ * 向群组列表中添加所有群组
+ */
+function add_group_to_group_list(group){
+	/*alert(JSON.stringify(group));*/
+	/*"action":"get","application":"05406310-aa54-11e7-82fa-e9c7e84c4f7b","uri":"http://a1.easemob.com/1180170811178001/webim/users/admin123/joined_chatgroups","entities":[],
+		"data":[{"groupid":"1527151724075","groupname":"牛B哈哈哈哈哈哈"},
+		{"groupid":"1527151690102","groupname":"牛B哈哈哈哈哈哈"},
+		{"groupid":"1526986220783","groupname":"212"}]
+		,"timestamp":1527241822523,"duration":0,"organization":"1180170811178001","applicationName":"webim","count":3}*/
+	clear_gro_list();
+	var htm_final = "";
+	$.each(group.data,function(i,element){
+		var htm =
+			'<li class="">'   																	 +
+			'<div class="liLeft"><img src="/static/img/20170926103645_04.jpg"/></div>'        +
+			'<div class="liRight">'                                                          +
+			'<span class="intername">'+ element.groupname +'</span>'                          +
+			'<span class="infor" style="color: #888888">'+ element.groupid +'</span>'                                                    +
+			'<input type="hidden" id="'+ element.groupid +'" value="'+ element.groupid +'"/>'                                                    +
+			'</div>'                                                                         +
+			'</li>';
+		htm_final = htm_final + htm;
+	});
+	htm_final = '<ul>'+ htm_final  +'</ul>';
+	$(".conLeft_gro").append(htm_final);
+}
+
+/**
+ * 向右侧对话模块儿中添加div（群组）
+ * @param roster
+ */
+function add_group_div(group){
+	var htm_final = "";
+	$.each(group.data,function(i,element){
+		var f_class = "gro_" + element.groupname
+		var htm =
+			'<ul style="display:none" class="'+ f_class +'"></ul>';
+		htm_final = htm_final + htm;
+	});
+	$(".RightCont_Gro").prepend(htm_final);
+}
+/**
+ * 解散群组
+ */
+var dissolveGroup = function (groupId,gro_or_fri) {
+	var option = {
+		groupId: groupId,
+		success: function () {
+			$("#" + groupId).parent().parent().remove();
+			$("." + "gro_" + gro_or_fri).remove();
+			layer.msg("成功删除群组")
+		}
+	};
+	conn.dissolveGroup(option);
+};
+//获取当前群组信息
+var queryGroupInfo = function (group_id) {
+	conn.queryRoomInfo({
+		roomId: group_id,
+		// settings 表示入群的权限，具体值待定
+		// members[0]里面包含群主信息，其结构为{affiliation: 'owner', jid: appKey + '_' + username + '@easemob.com'}
+		// jid中的username就是群主ID
+		// fields的结构为：
+		/*
+		 {
+		 affiliations: '2',
+		 description: '12311231313',         // 群简介
+		 maxusers: '200',                    // 群最大成员容量
+		 name: '123',                        // 群名称
+		 occupants: '2',
+		 owner: 'easemob-demo#chatdemoui_mengyuanyuan'               // 群主jid
+		 }
+		 */
+		success: function (settings, members, fields) {
+			/*[{"jid":"admin123@easemob.com","affiliation":"owner"}]*/
+			return(members[0].affiliation);
+		},
+		error: function () {
+			layer.msg("未知错误！！！！")
+		}
+	});
+};
+
+/**
+ * 加入群组
+ */
+function add_group_msg(){
+	layer.open({
+		type: 2,
+		title: '加入群组',
+		area: ['300px' , '200px'],
+//            fixed: false, //不固定
+//            maxmin: true,
+		skin: 'layui-layer-rim', //加上边框
+//            shadeClose: true,
+		content:'static/add_group.html',
+		btn: ['确定', '取消'],
+		yes: function(index, layero){
+			var body = layer.getChildFrame('body', index);
+			var iframeWin = window[layero.find('iframe')[0]['name']];//得到iframe页的窗口对象，执行iframe页的方法：
+			var group_id = iframeWin.get_id();//调用子页面的方法，得到子页面返回的ids
+			add_group(group_id);
+			layer.close(index);//需要手动关闭窗口
+		}
+	});
+}
+/**
+ * 加入群组
+ */
+function add_group(group_id){
+	alert(group_id);
+	var options = {
+		groupId: group_id,
+		success: function(resp) {
+			console.log("Response: ", resp);
+		},
+		error: function(e) {
+			alert(JSON.stringify(e));
+		}
+	};
+	conn.joinGroup(options);
+}
+/**
+ * 创建群组
+ */
+function create_group_msg(){
+	layer.open({
+		type: 2,
+		title: '创建群组',
+		area: ['300px' , '200px'],
+//            fixed: false, //不固定
+//            maxmin: true,
+		skin: 'layui-layer-rim', //加上边框
+//            shadeClose: true,
+		content:'static/create_group.html',
+		btn: ['确定', '取消'],
+		yes: function(index, layero){
+			var body = layer.getChildFrame('body', index);
+			var iframeWin = window[layero.find('iframe')[0]['name']];//得到iframe页的窗口对象，执行iframe页的方法：
+			var group_name = iframeWin.get_group_name();//调用子页面的方法，得到子页面返回的ids
+			var member_name = iframeWin.get_member_name();//调用子页面的方法，得到子页面返回的ids
+			var members = member_name.split(",");
+			create_group(group_name,members);
+			layer.close(index);//需要手动关闭窗口
+		}
+	});
+}
+/**
+ * 创建群组
+ * 创建群组成功后会在回调函数里调用onCreateGroup函数。
+ * @param group_name
+ * @param members
+ */
+function create_group(group_name,members){
+	var options = {
+		data: {
+			groupname: group_name,
+			desc: '帅哥美女看过来',//群组描述
+			members: members,//members是用户名组成的数组
+			public: true,//pub等于true时，创建为公开群
+			approval: false,//approval等于true时，加群需要审批，为false时加群无需审批
+			allowinvites: true
+		},
+		success: function (respData) {
+			alert("成功" + JSON.stringify(respData))
+		},
+		error: function (respData) {
+			alert("失败" + JSON.stringify(respData))
+		}
+	};
+	conn.createGroupNew(options);
+}

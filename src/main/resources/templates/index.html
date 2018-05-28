@@ -36,6 +36,7 @@
 	<br/>
 	<input type="button" value="注册" id="regist_button"/>
 	<input type="button" value="登录" id="login_button"/>
+	<h2>测试下看看jenkins好不好用</h2>
 </div>
 <div class="qqBox" style="display:none" id="conversation_ui">
 	<div class="BoxHead">
@@ -45,63 +46,32 @@
 		<div class="internetName"><a href="javascript:void(0);"><span id="user_msg"></span></a></div>
 	</div>
 	<div class="context">
-		<!--<div class="tab" style="float:left;">
-			&lt;!&ndash; <a href="JavaScript:;"><i id="friend_group-msg"></i></a> &ndash;&gt;
-			<div style="background-color: #1aa1e4;height: 20px;width: 10px;float:left;" ></div>
-			<div style="background-color: red;height: 20px;width: 10px;float:left;" ></div>
-		</div>-->
 		<div class="conLeft" >
 			<ul>
-				<!--<li>
-					<div class="liLeft"><img th:src="@{/static/img/20170926103645_04.jpg}"/></div>
-					<div class="liRight">
-						<span class="intername">前端交流群</span>
-						<span class="infor">厉害了</span>
-					</div>
-				</li>
-				<li>
-					<div class="liLeft"><img th:src="@{/static/img/20170926103645_04.jpg}"/></div>
-					<div class="liRight">
-						<span class="intername">前端交流群</span>
-						<span class="infor">厉害了</span>
-					</div>
-				</li>
-				<li class="bg">
-					<div class="liLeft"><img th:src="@{/static/img/20170926103645_19.jpg}"/></div>
-					<div class="liRight">
-						<span  class="intername">赵鹏</span>
-						<span class="infor">[流泪]</span>
-					</div>
-				</li>
-				<li>
-					<div class="liLeft"><img th:src="@{/static/img/20170926103645_27.jpg}"/></div>
-					<div class="liRight">
-						<span  class="intername">web交流群</span>
-						<span class="infor">666</span>
-					</div>
-				</li>
-				<li>
-					<div class="liLeft"><img th:src="@{/static/img/20170926103645_21.jpg}"/></div>
-					<div class="liRight">
-						<span  class="intername">jquery插件库</span>
-						<span class="infor">这个群妹子多</span>
-					</div>
-				</li>-->
+
+			</ul>
+		</div>
+		<div class="conLeft_gro" style="display: none" >
+			<ul>
+
 			</ul>
 		</div>
 		<div class="conRight">
 			<div class="Righthead">
-				<div class="headName">赵鹏</div>
+				<div class="headName"></div>
 				<div class="headConfig">
 					<ul>
 						<li><img th:src="@{/static/img/20170926103645_06.jpg}"/></li>
-						<li><img th:src="@{/static/img/20170926103645_08.jpg}"/></li>
+						<li><img th:src="@{/static/img/20170926103645_08.jpg}" id="create_group"/></li>
 						<li><img th:src="@{/static/img/20170926103645_10.jpg}" id="add_friend" /></li>
 						<li><img th:src="@{/static/img/20170926103645_12.jpg}" id="delete_friends"/></li>
 					</ul>
 				</div>
 			</div>
 			<div class="RightCont">
+				<!--<ul class="newsList"></ul>-->
+			</div>
+			<div class="RightCont_Gro" style="display: none">
 				<!--<ul class="newsList"></ul>-->
 			</div>
 			<div class="RightFoot">
@@ -146,12 +116,12 @@
 				</div>
 				<div class="footTop">
 					<ul>
-						<li><img th:src="@{/static/img/20170926103645_31.jpg}"/></li>
+						<li><img th:src="@{/static/img/20170926103645_31.jpg}" id="change_role"/></li>
 						<li class="ExP"><img th:src="@{/static/img/20170926103645_33.jpg}"/></li>
+						<li><img th:src="@{/static/img/20170926103645_41.jpg}" alt="" id="send_pic"/></li>
 						<li><img th:src="@{/static/img/20170926103645_35.jpg}"/></li>
 						<li><img th:src="@{/static/img/20170926103645_37.jpg}"/></li>
 						<li><img th:src="@{/static/img/20170926103645_39.jpg}"/></li>
-						<li><img th:src="@{/static/img/20170926103645_41.jpg}" alt="" id="send_pic"/></li>
 						<li><img th:src="@{/static/img/20170926103645_43.jpg}"/></li>
 						<li><img th:src="@{/static/img/20170926103645_45.jpg}"/></li>
 					</ul>
@@ -167,8 +137,10 @@
 		</div>
 	</div>
 </div>
-<input type="hidden" value="" id="friend_id"/><!--存储当前被选中的id-->
+<input type="hidden" value="fri" id="gro_or_fri"/><!--存储当前被选中的id-->
 <input type="hidden" value="" id="will_add_friend"/><!--存储将要添加的好友id-->
 <input type="file" style="display: none" accept="image/png,image/gif,image/jpeg" id="pic"/><!--加载要发送的图片-->
+<input type="hidden" value="" id="now_status"/><!--当前展示的是好友还是群组-->
+<input type="hidden" value="" id="group_id"/><!--当前被选中的群组id-->
 </body>
 </html>

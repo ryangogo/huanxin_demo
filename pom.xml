@@ -65,7 +65,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>huanxin_demo</finalName>
+		<finalName>huanxin_demo</finalName><!--打包的时候最终生成的名字-->
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

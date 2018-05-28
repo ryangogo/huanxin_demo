@@ -131,7 +131,29 @@ conn.listen({
             });
         });*/
     },         //处理好友申请
-    onInviteMessage: function ( message ) {},  //处理群组邀请
+    onInviteMessage: function ( message ) {
+        alert(JSON.stringify(message));
+        /*"type":"invite","from":"admin123","roomid":"50348961103873","reason":""*/
+        layer.confirm('用户 '+message.from+'邀请您入群', {
+            btn: ['同意','拒绝'] //按钮
+        }, function(){
+            var options = {
+                applicant: applicant,
+                groupId: groupId,
+                success: function(resp){
+                    console.log(resp);
+                },
+                error: function(e){}
+            };
+            conn.agreeJoinGroup(options);
+        }, function(){
+            layer.msg('也可以这样', {
+                time: 20000, //20s后自动关闭
+                btn: ['明白了', '知道了']
+            });
+        });
+
+    },  //处理群组邀请
     onOnline: function () {},                  //本机网络连接成功
     onOffline: function () {},                 //本机网络掉线
     onError: function ( message ) {},          //失败回调
@@ -142,6 +164,8 @@ conn.listen({
     onReceivedMessage: function(message){},    //收到消息送达服务器回执
     onDeliveredMessage: function(message){},   //收到消息送达客户端回执
     onReadMessage: function(message){},        //收到消息已读回执
-    onCreateGroup: function(message){},        //创建群组成功回执（需调用createGroupNew）
+    onCreateGroup: function(message){
+        /*alert(JSON.stringify(message))*/
+    },        //创建群组成功回执（需调用createGroupNew）
     onMutedMessage: function(message){}        //如果用户在A群组被禁言，在A群发消息会走这个回调并且消息不会传递给群其它成员
 });//创建连接
